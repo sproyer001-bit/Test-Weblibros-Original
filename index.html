@@ -9,11 +9,11 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* gray-100 */
+            background-color: #f3f4f6;
         }
         .loader {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6; /* blue-500 */
+            border-top: 4px solid #3b82f6;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -23,7 +23,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Ocultar scrollbar para un look más limpio en móvil */
         ::-webkit-scrollbar {
             width: 0px;
             background: transparent;
@@ -34,7 +33,7 @@
 
     <header class="bg-white shadow-sm p-4 sticky top-0 z-10">
         <div class="max-w-md mx-auto flex items-center justify-center space-x-2">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
@@ -44,10 +43,9 @@
 
     <main class="flex-grow max-w-md mx-auto w-full p-4 flex flex-col space-y-6">
 
-        <!-- Tarjeta de la clave de Gemini (se guarda solo en este navegador) -->
+        <!-- Tarjeta de la clave de Gemini -->
         <div class="bg-white rounded-2xl shadow-md p-6">
             <label for="apiKeyInput" class="block text-sm font-semibold text-gray-800 mb-2">Clave de Gemini</label>
-
             <div id="keyForm" class="flex space-x-2">
                 <input id="apiKeyInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false"
                        placeholder="Pega aquí tu clave"
@@ -57,57 +55,55 @@
                     Guardar
                 </button>
             </div>
-
             <div id="keySaved" class="hidden">
                 <div class="flex items-center justify-between">
                     <p class="text-sm text-green-700 font-medium">Clave guardada en este dispositivo</p>
                     <button id="changeKeyBtn" type="button" class="text-sm text-blue-600 hover:text-blue-800 font-semibold">Cambiar</button>
                 </div>
             </div>
-
-            <p class="text-xs text-gray-500 mt-3">La clave se queda solo en este navegador. No se sube a GitHub ni a ningún otro sitio, salvo a Google para analizar tus fotos.</p>
         </div>
 
-        <!-- Tarjeta de instrucciones y botón de subida -->
+        <!-- Tarjeta de subida -->
         <div class="bg-white rounded-2xl shadow-md p-6 text-center">
-            <p class="text-sm text-gray-500 mb-6">Toma una foto o sube una imagen de tu galería para que la IA de Gemini la analice y genere un título y sinopsis.</p>
-
-            <!-- Input oculto para manejar archivos. accept="image/*" en móvil abre la opción de Cámara o Galería -->
             <input type="file" id="imageInput" accept="image/*" class="hidden">
-
             <button id="uploadBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 flex items-center justify-center space-x-2 shadow-lg shadow-blue-500/30">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                 </svg>
-                <span>Subir / Tomar Foto</span>
+                <span>Subir / Tomar Foto de Libro</span>
             </button>
         </div>
 
-        <!-- Contenedor de Vista Previa (Oculto por defecto) -->
+        <!-- Vista Previa -->
         <div id="previewContainer" class="hidden bg-white rounded-2xl shadow-md overflow-hidden relative">
             <img id="imagePreview" src="" alt="Vista previa" class="w-full h-64 object-cover">
-
-            <!-- Overlay de carga (Oculto por defecto) -->
             <div id="loadingOverlay" class="hidden absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
                 <div class="loader mb-3"></div>
-                <p class="text-sm font-semibold text-blue-600 animate-pulse">Analizando imagen con Gemini...</p>
+                <p class="text-sm font-semibold text-blue-600 animate-pulse">Analizando con Gemini...</p>
             </div>
         </div>
 
-        <!-- Contenedor de Resultados (Oculto por defecto) -->
-        <div id="resultContainer" class="hidden bg-white rounded-2xl shadow-md p-6 space-y-4">
+        <!-- Resultado Actual -->
+        <div id="resultContainer" class="hidden bg-white rounded-2xl shadow-md p-6 space-y-4 border-2 border-blue-500">
             <div>
-                <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Título Generado</h2>
+                <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Último Libro Generado</h2>
                 <h3 id="resultTitle" class="text-xl font-bold text-gray-900 leading-tight"></h3>
             </div>
             <div class="h-px bg-gray-100 w-full"></div>
             <div>
-                <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Sinopsis Detallada</h2>
                 <p id="resultSynopsis" class="text-gray-700 text-sm leading-relaxed"></p>
             </div>
         </div>
 
-        <!-- Contenedor de Error (Oculto por defecto) -->
+        <!-- Historial de Firebase -->
+        <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
+            <h2 class="text-lg font-bold text-gray-900 border-b pb-2">Libros Guardados</h2>
+            <div id="historialLista" class="space-y-4">
+                <p class="text-sm text-gray-500">Cargando...</p>
+            </div>
+        </div>
+
+        <!-- Errores -->
         <div id="errorContainer" class="hidden bg-red-50 border border-red-200 rounded-2xl p-4 text-center">
             <p id="errorMessage" class="text-sm text-red-600 font-medium"></p>
             <p id="errorDetail" class="text-xs text-red-400 mt-2 break-words"></p>
@@ -115,10 +111,13 @@
 
     </main>
 
-    <!-- Configuración e inicialización de Firebase -->
+    <!-- Script principal como Módulo -->
     <script type="module">
+        // 1. IMPORTACIONES DE FIREBASE
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
+        // 2. CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCXyqPSAPOfOlB2vFBY-vKWKAiovDcQwz4",
             authDomain: "prueba-1-ff8ed.firebaseapp.com",
@@ -127,305 +126,200 @@
             messagingSenderId: "65575177647",
             appId: "1:65575177647:web:905b36443bfe0f6a01335a"
         };
-
         const app = initializeApp(firebaseConfig);
-    </script>
+        const db = getFirestore(app);
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ---------------------------------------------------------------
-            // CONFIGURACIÓN
-            // Modelos que se prueban en orden. Si Google retira uno (error 404),
-            // se prueba el siguiente. Si todos fallan, actualiza esta lista con
-            // los nombres que aparecen en https://ai.google.dev/gemini-api/docs/models
-            // ---------------------------------------------------------------
-            const MODELS = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
-            const STORAGE_KEY = 'gemini_vision_snap_api_key';
-            const MAX_IMAGE_SIDE = 1600; // px; reduce el tamaño de las fotos del móvil antes de enviarlas
+        // 3. CONFIGURACIÓN GEMINI
+        const MODELS = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
+        const STORAGE_KEY = 'gemini_vision_snap_api_key';
+        const MAX_IMAGE_SIDE = 1600; 
 
-            // Elementos de la página
-            const apiKeyInput = document.getElementById('apiKeyInput');
-            const saveKeyBtn = document.getElementById('saveKeyBtn');
-            const changeKeyBtn = document.getElementById('changeKeyBtn');
-            const keyForm = document.getElementById('keyForm');
-            const keySaved = document.getElementById('keySaved');
+        // Elementos UI
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const changeKeyBtn = document.getElementById('changeKeyBtn');
+        const keyForm = document.getElementById('keyForm');
+        const keySaved = document.getElementById('keySaved');
+        const imageInput = document.getElementById('imageInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultSynopsis = document.getElementById('resultSynopsis');
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorDetail = document.getElementById('errorDetail');
+        const historialLista = document.getElementById('historialLista');
 
-            const imageInput = document.getElementById('imageInput');
-            const uploadBtn = document.getElementById('uploadBtn');
-            const previewContainer = document.getElementById('previewContainer');
-            const imagePreview = document.getElementById('imagePreview');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const resultContainer = document.getElementById('resultContainer');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultSynopsis = document.getElementById('resultSynopsis');
-            const errorContainer = document.getElementById('errorContainer');
-            const errorMessage = document.getElementById('errorMessage');
-            const errorDetail = document.getElementById('errorDetail');
-
-            // ---------------------------------------------------------------
-            // CLAVE DE LA API (se guarda solo en el navegador del usuario)
-            // ---------------------------------------------------------------
-            let currentKey = '';
-            try {
-                currentKey = localStorage.getItem(STORAGE_KEY) || '';
-            } catch (e) {
-                currentKey = '';
+        // Manejo de Clave Gemini
+        let currentKey = localStorage.getItem(STORAGE_KEY) || '';
+        function showKeyState() {
+            if (currentKey) {
+                keyForm.classList.add('hidden');
+                keySaved.classList.remove('hidden');
+            } else {
+                keyForm.classList.remove('hidden');
+                keySaved.classList.add('hidden');
             }
+        }
+        showKeyState();
 
-            function showKeyState() {
-                if (currentKey) {
-                    keyForm.classList.add('hidden');
-                    keySaved.classList.remove('hidden');
-                } else {
-                    keyForm.classList.remove('hidden');
-                    keySaved.classList.add('hidden');
-                }
-            }
-
-            function showError(message, detail) {
-                errorMessage.textContent = message;
-                errorDetail.textContent = detail || '';
-                errorContainer.classList.remove('hidden');
-            }
-
-            function hideError() {
-                errorContainer.classList.add('hidden');
-                errorMessage.textContent = '';
-                errorDetail.textContent = '';
-            }
-
-            saveKeyBtn.addEventListener('click', () => {
-                // Quita espacios y comillas por si se pegaron junto con la clave
-                const value = apiKeyInput.value.trim().replace(/^["']|["']$/g, '');
-                if (!value) {
-                    showError('Pega primero tu clave de Gemini en el campo.');
-                    apiKeyInput.focus();
-                    return;
-                }
-                currentKey = value;
-                try {
-                    localStorage.setItem(STORAGE_KEY, value);
-                } catch (e) {
-                    // Si el navegador no deja guardar, la clave sirve solo mientras la página siga abierta
-                }
-                apiKeyInput.value = '';
-                hideError();
-                showKeyState();
-            });
-
-            changeKeyBtn.addEventListener('click', () => {
-                currentKey = '';
-                try {
-                    localStorage.removeItem(STORAGE_KEY);
-                } catch (e) {}
-                showKeyState();
-                apiKeyInput.focus();
-            });
-
+        saveKeyBtn.addEventListener('click', () => {
+            const value = apiKeyInput.value.trim().replace(/^["']|["']$/g, '');
+            if (!value) return;
+            currentKey = value;
+            localStorage.setItem(STORAGE_KEY, value);
+            apiKeyInput.value = '';
             showKeyState();
+        });
 
-            // ---------------------------------------------------------------
-            // SUBIDA DE LA FOTO
-            // ---------------------------------------------------------------
-            uploadBtn.addEventListener('click', () => {
-                if (!currentKey) {
-                    showError('Antes de subir una foto, pega y guarda tu clave de Gemini.');
-                    apiKeyInput.focus();
+        changeKeyBtn.addEventListener('click', () => {
+            currentKey = '';
+            localStorage.removeItem(STORAGE_KEY);
+            showKeyState();
+        });
+
+        // Cargar historial de Firebase al inicio
+        async function cargarHistorial() {
+            try {
+                // Pide los libros ordenados por fecha de creación (los más nuevos primero)
+                const q = query(collection(db, "libros"), orderBy("fecha", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                historialLista.innerHTML = ''; 
+                
+                if (querySnapshot.empty) {
+                    historialLista.innerHTML = '<p class="text-sm text-gray-500">Aún no hay libros guardados.</p>';
                     return;
                 }
-                imageInput.click();
-            });
 
-            imageInput.addEventListener('change', async (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                hideError();
-                resultContainer.classList.add('hidden');
-
-                const prepared = await prepareImage(file);
-                imageInput.value = ''; // permite elegir la misma foto otra vez
-
-                imagePreview.src = prepared.dataUrl;
-                previewContainer.classList.remove('hidden');
-
-                analyzeImageWithGemini(prepared.base64, prepared.mime);
-            });
-
-            // Reduce la foto (los móviles hacen fotos muy pesadas) y la convierte a JPEG.
-            // Si algo falla, usa la foto original.
-            function prepareImage(file) {
-                return new Promise((resolve) => {
-                    const useOriginal = () => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve({
-                            dataUrl: reader.result,
-                            base64: reader.result.split(',')[1],
-                            mime: file.type || 'image/jpeg'
-                        });
-                        reader.readAsDataURL(file);
-                    };
-
-                    const objectUrl = URL.createObjectURL(file);
-                    const img = new Image();
-
-                    img.onload = () => {
-                        try {
-                            const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
-                            const canvas = document.createElement('canvas');
-                            canvas.width = Math.round(img.naturalWidth * scale);
-                            canvas.height = Math.round(img.naturalHeight * scale);
-                            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                            URL.revokeObjectURL(objectUrl);
-                            resolve({
-                                dataUrl: dataUrl,
-                                base64: dataUrl.split(',')[1],
-                                mime: 'image/jpeg'
-                            });
-                        } catch (e) {
-                            URL.revokeObjectURL(objectUrl);
-                            useOriginal();
-                        }
-                    };
-
-                    img.onerror = () => {
-                        URL.revokeObjectURL(objectUrl);
-                        useOriginal();
-                    };
-
-                    img.src = objectUrl;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const item = document.createElement('div');
+                    item.className = 'border-b border-gray-100 pb-3';
+                    item.innerHTML = `
+                        <h4 class="font-bold text-gray-900">${data.titulo}</h4>
+                        <p class="text-sm text-gray-600 mt-1">${data.sinopsis}</p>
+                    `;
+                    historialLista.appendChild(item);
                 });
-            }
-
-            // ---------------------------------------------------------------
-            // LLAMADA A GEMINI
-            // ---------------------------------------------------------------
-            function explainError(status, message) {
-                const text = (message || '').toLowerCase();
-                if (status === 400 && text.includes('api key')) {
-                    return 'La clave no es válida. Cópiala de nuevo desde Google AI Studio y pulsa "Cambiar" para pegarla.';
-                }
-                if (status === 401 || status === 403) {
-                    return 'Google ha rechazado la clave. Puede estar mal copiada o desactivada. Crea una clave nueva en AI Studio y pégala aquí con "Cambiar".';
-                }
-                if (status === 404) {
-                    return 'Ninguno de los modelos de la lista está disponible. Hay que actualizar los nombres en el archivo (lista MODELS).';
-                }
-                if (status === 429) {
-                    return 'Has llegado al límite de uso. Espera un minuto e inténtalo de nuevo.';
-                }
-                if (status >= 500) {
-                    return 'Los servidores de Google tienen problemas ahora mismo. Inténtalo de nuevo en un rato.';
-                }
-                return 'No se pudo analizar la imagen.';
-            }
-
-            async function analyzeImageWithGemini(base64Data, mimeType) {
-                // Mostrar estado de carga
-                loadingOverlay.classList.remove('hidden');
-                uploadBtn.disabled = true;
-                uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
-
-                // Prompt estructurado pidiendo JSON
-                const promptText = "Analiza esta imagen con mucho detalle. Genera un título creativo y una sinopsis completa describiendo lo que ves, los colores, el ambiente y el contexto. Devuelve el resultado ESTRICTAMENTE en formato JSON con la siguiente estructura: { \"titulo\": \"Tu título aquí\", \"sinopsis\": \"Tu sinopsis aquí\" }";
-
-                const payload = {
-                    contents: [
-                        {
-                            role: "user",
-                            parts: [
-                                { text: promptText },
-                                {
-                                    inlineData: {
-                                        mimeType: mimeType,
-                                        data: base64Data
-                                    }
-                                }
-                            ]
-                        }
-                    ],
-                    // Forzar respuesta en JSON para procesarlo fácilmente
-                    generationConfig: {
-                        responseMimeType: "application/json"
-                    }
-                };
-
+            } catch (error) {
+                console.error("Error cargando historial:", error);
+                // Si el índice requiere crearse, Firebase tirará error por el 'orderBy' la primera vez, 
+                // para simplificar lo cargamos sin ordenar si falla el índice:
                 try {
-                    let response = null;
-
-                    // Prueba cada modelo en orden; pasa al siguiente solo si el actual da 404
-                    for (let i = 0; i < MODELS.length; i++) {
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODELS[i]}:generateContent`;
-                        response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'x-goog-api-key': currentKey
-                            },
-                            body: JSON.stringify(payload)
-                        });
-                        if (response.status !== 404) break;
-                    }
-
-                    if (!response.ok) {
-                        const body = await response.json().catch(() => ({}));
-                        const apiMessage = (body.error && body.error.message) || 'sin detalle';
-                        const err = new Error(apiMessage);
-                        err.status = response.status;
-                        throw err;
-                    }
-
-                    const result = await response.json();
-
-                    const candidate = result.candidates && result.candidates[0];
-                    const parts = candidate && candidate.content && candidate.content.parts;
-
-                    if (!parts || parts.length === 0) {
-                        const reason = (result.promptFeedback && result.promptFeedback.blockReason) || (candidate && candidate.finishReason) || 'respuesta vacía';
-                        const err = new Error('Gemini no devolvió texto (' + reason + ')');
-                        err.status = 0;
-                        throw err;
-                    }
-
-                    // Une el texto de la respuesta (ignora las partes de "pensamiento" interno)
-                    let jsonString = parts
-                        .filter(p => p.text && !p.thought)
-                        .map(p => p.text)
-                        .join('')
-                        .trim();
-
-                    // Por si el modelo envuelve el JSON en ```json ... ```
-                    jsonString = jsonString.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
-
-                    const parsedData = JSON.parse(jsonString);
-
-                    // Actualizar UI con los resultados
-                    resultTitle.textContent = parsedData.titulo || "Título no disponible";
-                    resultSynopsis.textContent = parsedData.sinopsis || "Sinopsis no disponible";
-
-                    resultContainer.classList.remove('hidden');
-
-                    // Hacer scroll suave hacia los resultados en móviles
-                    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                } catch (error) {
-                    console.error("Error al analizar la imagen:", error);
-                    if (error.status !== undefined && error.status !== 0) {
-                        showError(explainError(error.status, error.message), 'Detalle: ' + error.status + ' · ' + error.message);
-                    } else if (error instanceof TypeError) {
-                        showError('No se pudo conectar con Google. Revisa tu conexión a internet e inténtalo de nuevo.', 'Detalle: ' + error.message);
-                    } else {
-                        showError('No se pudo leer la respuesta de Gemini. Inténtalo de nuevo.', 'Detalle: ' + error.message);
-                    }
-                } finally {
-                    // Ocultar estado de carga y reactivar botón
-                    loadingOverlay.classList.add('hidden');
-                    uploadBtn.disabled = false;
-                    uploadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    const fallbackSnapshot = await getDocs(collection(db, "libros"));
+                    historialLista.innerHTML = ''; 
+                    fallbackSnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        historialLista.innerHTML += `
+                            <div class="border-b border-gray-100 pb-3">
+                                <h4 class="font-bold text-gray-900">${data.titulo}</h4>
+                                <p class="text-sm text-gray-600 mt-1">${data.sinopsis}</p>
+                            </div>
+                        `;
+                    });
+                } catch(e) {
+                    historialLista.innerHTML = '<p class="text-sm text-red-500">Error al cargar la base de datos.</p>';
                 }
             }
+        }
+        
+        cargarHistorial(); // Llama a la función nada más cargar la página
+
+        // Subida de imagen
+        uploadBtn.addEventListener('click', () => {
+            if (!currentKey) return;
+            imageInput.click();
         });
+
+        imageInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            errorContainer.classList.add('hidden');
+            resultContainer.classList.add('hidden');
+
+            // Preparar imagen
+            const objectUrl = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.round(img.naturalWidth * scale);
+                canvas.height = Math.round(img.naturalHeight * scale);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                const base64 = dataUrl.split(',')[1];
+                
+                imagePreview.src = dataUrl;
+                previewContainer.classList.remove('hidden');
+                
+                analyzeImageWithGemini(base64, 'image/jpeg');
+            };
+            img.src = objectUrl;
+        });
+
+        async function analyzeImageWithGemini(base64Data, mimeType) {
+            loadingOverlay.classList.remove('hidden');
+            uploadBtn.disabled = true;
+
+            const promptText = "Analiza esta imagen con mucho detalle. Genera un título creativo y una sinopsis completa. Devuelve el resultado ESTRICTAMENTE en formato JSON: { \"titulo\": \"...\", \"sinopsis\": \"...\" }";
+
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: promptText }, { inlineData: { mimeType: mimeType, data: base64Data } }]
+                }],
+                generationConfig: { responseMimeType: "application/json" }
+            };
+
+            try {
+                let response = null;
+                for (let i = 0; i < MODELS.length; i++) {
+                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODELS[i]}:generateContent`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': currentKey },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.status !== 404) break;
+                }
+
+                if (!response.ok) throw new Error("Fallo en la API");
+                const result = await response.json();
+                
+                const parts = result.candidates[0].content.parts;
+                let jsonString = parts.filter(p => p.text && !p.thought).map(p => p.text).join('').trim();
+                jsonString = jsonString.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+                
+                const parsedData = JSON.parse(jsonString);
+
+                // Mostrar en pantalla
+                resultTitle.textContent = parsedData.titulo;
+                resultSynopsis.textContent = parsedData.sinopsis;
+                resultContainer.classList.remove('hidden');
+
+                // GUARDAR EN FIREBASE
+                await addDoc(collection(db, "libros"), {
+                    titulo: parsedData.titulo,
+                    sinopsis: parsedData.sinopsis,
+                    fecha: serverTimestamp()
+                });
+
+                // Actualizar la lista visible abajo
+                cargarHistorial();
+
+            } catch (error) {
+                console.error(error);
+                errorMessage.textContent = "Error al analizar o guardar.";
+                errorContainer.classList.remove('hidden');
+            } finally {
+                loadingOverlay.classList.add('hidden');
+                uploadBtn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
