@@ -1,325 +1,310 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Vision Snap</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F2F7">
+<title>Libros</title>
+<style>
+:root{--bg:#F2F2F7;--card:#fff;--tx:#000;--tx2:#8A8A8E;--sep:#E5E5EA;--blue:#007AFF;--green:#34C759;--red:#FF3B30;--bar:rgba(249,249,249,.84)}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1C1C1E;--tx:#fff;--tx2:#98989F;--sep:#38383A;--blue:#0A84FF;--green:#30D158;--red:#FF453A;--bar:rgba(29,29,31,.84)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:17px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+main{max-width:640px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 12px) 16px 0}
+h1{font-size:34px;font-weight:700;letter-spacing:.37px;margin:8px 4px 16px}
+h3{margin:0 0 4px;font-size:17px;font-weight:600}
+.hidden{display:none!important}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font:inherit;cursor:pointer}
+.card{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.pad{padding:16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+.row input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--tx);font:inherit}
+.link{background:none;border:0;color:var(--blue);font-weight:600;padding:0}
+.note{font-size:13px;color:var(--tx2);margin:-8px 16px 20px}
+.okt{color:var(--green);font-weight:600;display:flex;align-items:center;gap:6px}
+.main-btn{width:100%;border:0;border-radius:14px;background:var(--blue);color:#fff;font-weight:600;padding:15px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px}
+.main-btn:active{opacity:.7}
+.main-btn:disabled{opacity:.4}
+.prev{position:relative}
+.prev img{width:100%;height:220px;object-fit:cover;display:block}
+#ov{position:absolute;inset:0;background:var(--bar);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--tx2);font-size:15px}
+.sp{width:28px;height:28px;border:3px solid var(--sep);border-top-color:var(--blue);border-radius:50%;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.sin{margin:0;font-size:15px;color:var(--tx2)}
+.libro p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.libro p.open{display:block}
+.acts{display:flex;border-top:.5px solid var(--sep);margin:14px -16px -16px}
+.acts button{flex:1;background:none;border:0;padding:14px 8px;font-size:16px;color:var(--blue);display:flex;align-items:center;justify-content:center;gap:6px}
+.acts button:active{background:var(--bg)}
+.acts button+button{border-left:.5px solid var(--sep)}
+.acts .ok{color:var(--green);font-weight:600}
+.acts .del{color:var(--red);flex:0 0 22%}
+.vacio{text-align:center;color:var(--tx2);font-size:15px;padding:56px 24px 0;margin:0}
+.errc{background:rgba(255,59,48,.1);color:var(--red)}
+.errc p{margin:6px 0 0;font-size:13px;word-break:break-word}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bar);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--sep);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.tabs button{flex:1;background:none;border:0;color:var(--tx2);font-size:10px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;position:relative}
+.tabs button.on{color:var(--blue)}
+.tabs svg{width:26px;height:26px}
+.badge{position:absolute;top:-1px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 5px}
+#toast{z-index:60;position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,12px);background:rgba(60,60,67,.94);color:#fff;font-size:15px;padding:10px 18px;border-radius:20px;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#v-add{min-height:calc(100vh - 250px);min-height:calc(100dvh - 250px);display:flex;flex-direction:column}
+.keybtn{display:flex;align-items:center;gap:7px;margin:auto auto 0;background:none;border:0;color:var(--tx2);font-size:13px;padding:10px}
+.keybtn i{width:7px;height:7px;border-radius:50%;display:block}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.4);display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 48px) 16px 0}
+.panel{width:100%;max-width:420px;background:var(--bg);border-radius:14px;padding:20px 16px 8px;display:flex;flex-direction:column}
+.panel h3{text-align:center}
+.panel .sin{text-align:center;margin-bottom:14px}
+.panel .link{padding:12px}
+.panel .rm{color:var(--red)}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
 </head>
-<body class="min-h-screen text-gray-800 flex flex-col">
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></symbol>
+<symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></symbol>
+</defs></svg>
 
-    <header class="bg-white shadow-sm p-4 sticky top-0 z-10">
-        <div class="max-w-md mx-auto flex items-center justify-center space-x-2">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
-            <h1 class="text-xl font-bold text-gray-900">IA Vision Snap</h1>
-        </div>
-    </header>
+<main>
+<h1 id="h1">Añadir</h1>
 
-    <main class="flex-grow max-w-md mx-auto w-full p-4 flex flex-col space-y-6">
+<section id="v-add">
+  <input type="file" id="imageInput" accept="image/*" class="hidden">
+  <button id="uploadBtn" class="main-btn" type="button"><svg><use href="#i-cam"/></svg>Tomar o subir foto</button>
 
-        <!-- Tarjeta de la clave de Gemini -->
-        <div class="bg-white rounded-2xl shadow-md p-6">
-            <label for="apiKeyInput" class="block text-sm font-semibold text-gray-800 mb-2">Clave de Gemini</label>
-            <div id="keyForm" class="flex space-x-2">
-                <input id="apiKeyInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false"
-                       placeholder="Pega aquí tu clave"
-                       class="flex-1 min-w-0 border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button id="saveKeyBtn" type="button"
-                        class="bg-gray-900 hover:bg-gray-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition duration-300">
-                    Guardar
-                </button>
-            </div>
-            <div id="keySaved" class="hidden">
-                <div class="flex items-center justify-between">
-                    <p class="text-sm text-green-700 font-medium">Clave guardada en este dispositivo</p>
-                    <button id="changeKeyBtn" type="button" class="text-sm text-blue-600 hover:text-blue-800 font-semibold">Cambiar</button>
-                </div>
-            </div>
-        </div>
+  <div id="previewBox" class="card prev hidden">
+    <img id="imagePreview" alt="Vista previa">
+    <div id="ov" class="hidden"><div class="sp"></div>Analizando con Gemini…</div>
+  </div>
 
-        <!-- Tarjeta de subida -->
-        <div class="bg-white rounded-2xl shadow-md p-6 text-center">
-            <input type="file" id="imageInput" accept="image/*" class="hidden">
-            <button id="uploadBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 flex items-center justify-center space-x-2 shadow-lg shadow-blue-500/30">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                </svg>
-                <span>Subir / Tomar Foto de Libro</span>
-            </button>
-        </div>
+  <div id="res" class="card pad hidden">
+    <div class="okt" style="margin-bottom:10px"><svg><use href="#i-check"/></svg>Añadido a Por descargar</div>
+    <h3 id="rt"></h3>
+    <p id="rs" class="sin"></p>
+  </div>
 
-        <!-- Vista Previa -->
-        <div id="previewContainer" class="hidden bg-white rounded-2xl shadow-md overflow-hidden relative">
-            <img id="imagePreview" src="" alt="Vista previa" class="w-full h-64 object-cover">
-            <div id="loadingOverlay" class="hidden absolute inset-0 bg-white/80 flex flex-col items-center justify-center backdrop-blur-sm">
-                <div class="loader mb-3"></div>
-                <p class="text-sm font-semibold text-blue-600 animate-pulse">Analizando con Gemini...</p>
-            </div>
-        </div>
+  <div id="err" class="card pad errc hidden"><b id="em"></b><p id="ed"></p></div>
 
-        <!-- Resultado Actual -->
-        <div id="resultContainer" class="hidden bg-white rounded-2xl shadow-md p-6 space-y-4 border-2 border-blue-500">
-            <div>
-                <h2 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Último Libro Generado</h2>
-                <h3 id="resultTitle" class="text-xl font-bold text-gray-900 leading-tight"></h3>
-            </div>
-            <div class="h-px bg-gray-100 w-full"></div>
-            <div>
-                <p id="resultSynopsis" class="text-gray-700 text-sm leading-relaxed"></p>
-            </div>
-        </div>
+  <button id="keyOpen" class="keybtn" type="button"><i id="keyDot"></i>Clave de Gemini</button>
+</section>
 
-        <!-- Historial de Firebase -->
-        <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
-            <h2 class="text-lg font-bold text-gray-900 border-b pb-2">Libros Guardados</h2>
-            <div id="historialLista" class="space-y-4">
-                <p class="text-sm text-gray-500">Cargando...</p>
-            </div>
-        </div>
+<section id="v-pend" class="hidden"><div id="l-pend"></div></section>
+<section id="v-desc" class="hidden"><div id="l-desc"></div></section>
+</main>
 
-        <!-- Errores -->
-        <div id="errorContainer" class="hidden bg-red-50 border border-red-200 rounded-2xl p-4 text-center">
-            <p id="errorMessage" class="text-sm text-red-600 font-medium"></p>
-            <p id="errorDetail" class="text-xs text-red-400 mt-2 break-words"></p>
-        </div>
+<div id="sheet" class="sheet hidden">
+  <div class="panel" role="dialog" aria-label="Clave de Gemini">
+    <h3>Clave de Gemini</h3>
+    <p id="keyInfo" class="sin"></p>
+    <div class="card"><div class="row"><input id="apiKeyInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Pega aquí tu clave"></div></div>
+    <button id="saveKeyBtn" class="main-btn" type="button">Guardar clave</button>
+    <button id="removeKeyBtn" class="link rm hidden" type="button">Quitar clave</button>
+    <button id="closeKey" class="link" type="button">Cerrar</button>
+  </div>
+</div>
 
-    </main>
+<div id="toast" role="status"></div>
 
-    <!-- Script principal como Módulo -->
-    <script type="module">
-        // 1. IMPORTACIONES DE FIREBASE
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+<nav class="tabs">
+  <button id="t-add" class="on" data-t="add" type="button"><svg><use href="#i-cam"/></svg>Añadir</button>
+  <button id="t-pend" data-t="pend" type="button"><svg><use href="#i-down"/></svg>Por descargar<span id="badge" class="badge hidden"></span></button>
+  <button id="t-desc" data-t="desc" type="button"><svg><use href="#i-check"/></svg>Descargados</button>
+</nav>
 
-        // 2. CONFIGURACIÓN FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyCXyqPSAPOfOlB2vFBY-vKWKAiovDcQwz4",
-            authDomain: "prueba-1-ff8ed.firebaseapp.com",
-            projectId: "prueba-1-ff8ed",
-            storageBucket: "prueba-1-ff8ed.firebasestorage.app",
-            messagingSenderId: "65575177647",
-            appId: "1:65575177647:web:905b36443bfe0f6a01335a"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {getFirestore,collection,addDoc,doc,updateDoc,deleteDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-        // 3. CONFIGURACIÓN GEMINI
-        const MODELS = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
-        const STORAGE_KEY = 'gemini_vision_snap_api_key';
-        const MAX_IMAGE_SIDE = 1600; 
+const db=getFirestore(initializeApp({
+  apiKey:"AIzaSyCXyqPSAPOfOlB2vFBY-vKWKAiovDcQwz4",
+  authDomain:"prueba-1-ff8ed.firebaseapp.com",
+  projectId:"prueba-1-ff8ed",
+  storageBucket:"prueba-1-ff8ed.firebasestorage.app",
+  messagingSenderId:"65575177647",
+  appId:"1:65575177647:web:905b36443bfe0f6a01335a"
+}));
 
-        // Elementos UI
-        const apiKeyInput = document.getElementById('apiKeyInput');
-        const saveKeyBtn = document.getElementById('saveKeyBtn');
-        const changeKeyBtn = document.getElementById('changeKeyBtn');
-        const keyForm = document.getElementById('keyForm');
-        const keySaved = document.getElementById('keySaved');
-        const imageInput = document.getElementById('imageInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const previewContainer = document.getElementById('previewContainer');
-        const imagePreview = document.getElementById('imagePreview');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const resultContainer = document.getElementById('resultContainer');
-        const resultTitle = document.getElementById('resultTitle');
-        const resultSynopsis = document.getElementById('resultSynopsis');
-        const errorContainer = document.getElementById('errorContainer');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorDetail = document.getElementById('errorDetail');
-        const historialLista = document.getElementById('historialLista');
+// Modelos de Gemini: si uno no existe (404) o está saturado (429/503), se prueba el siguiente.
+const MODELS=['gemini-3.7-flash','gemini-3.6-flash','gemini-3.5-flash'];
+const KEY='gemini_vision_snap_api_key', MAX=1600;
+const PROMPT='Analiza esta imagen con mucho detalle. Genera un título creativo y una sinopsis completa describiendo lo que ves, los colores, el ambiente y el contexto. Devuelve el resultado ESTRICTAMENTE en formato JSON con la siguiente estructura: { "titulo": "Tu título aquí", "sinopsis": "Tu sinopsis aquí" }';
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 
-        // Manejo de Clave Gemini
-        let currentKey = localStorage.getItem(STORAGE_KEY) || '';
-        function showKeyState() {
-            if (currentKey) {
-                keyForm.classList.add('hidden');
-                keySaved.classList.remove('hidden');
-            } else {
-                keyForm.classList.remove('hidden');
-                keySaved.classList.add('hidden');
-            }
-        }
-        showKeyState();
+// ---------- Pestañas ----------
+const TITLES={add:'Añadir',pend:'Por descargar',desc:'Descargados'};
+function go(t){
+  for(const k in TITLES){$('v-'+k).classList.toggle('hidden',k!==t);$('t-'+k).classList.toggle('on',k===t)}
+  $('h1').textContent=TITLES[t];scrollTo(0,0);
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 
-        saveKeyBtn.addEventListener('click', () => {
-            const value = apiKeyInput.value.trim().replace(/^["']|["']$/g, '');
-            if (!value) return;
-            currentKey = value;
-            localStorage.setItem(STORAGE_KEY, value);
-            apiKeyInput.value = '';
-            showKeyState();
-        });
+// ---------- Avisos ----------
+let tt;
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
+function showError(m,d){$('em').textContent=m;$('ed').textContent=d||'';$('err').classList.remove('hidden')}
+function hideError(){$('err').classList.add('hidden')}
 
-        changeKeyBtn.addEventListener('click', () => {
-            currentKey = '';
-            localStorage.removeItem(STORAGE_KEY);
-            showKeyState();
-        });
+// ---------- Clave de Gemini (hoja que se abre desde el botón del final) ----------
+let key='';try{key=localStorage.getItem(KEY)||''}catch(e){}
+function keyState(){
+  $('keyDot').style.background=key?'var(--green)':'var(--red)';
+  $('keyInfo').textContent=key?'Clave guardada en este dispositivo. Pega otra para cambiarla.':'Pégala una sola vez. Se queda solo en este navegador.';
+  $('removeKeyBtn').classList.toggle('hidden',!key);
+}
+function abrirClave(){$('sheet').classList.remove('hidden');keyState();setTimeout(()=>$('apiKeyInput').focus(),50)}
+function cerrarClave(){$('sheet').classList.add('hidden');$('apiKeyInput').value=''}
+$('keyOpen').onclick=abrirClave;
+$('closeKey').onclick=cerrarClave;
+$('sheet').onclick=e=>{if(e.target===$('sheet'))cerrarClave()};
+$('saveKeyBtn').onclick=()=>{
+  const v=$('apiKeyInput').value.trim().replace(/^["']|["']$/g,'');
+  if(!v){$('apiKeyInput').focus();return}
+  key=v;try{localStorage.setItem(KEY,v)}catch(e){}
+  hideError();cerrarClave();keyState();toast('Clave guardada');
+};
+$('removeKeyBtn').onclick=()=>{key='';try{localStorage.removeItem(KEY)}catch(e){}cerrarClave();keyState();toast('Clave eliminada')};
+keyState();
 
-        // Cargar historial de Firebase al inicio
-        async function cargarHistorial() {
-            try {
-                // Pide los libros ordenados por fecha de creación (los más nuevos primero)
-                const q = query(collection(db, "libros"), orderBy("fecha", "desc"));
-                const querySnapshot = await getDocs(q);
-                
-                historialLista.innerHTML = ''; 
-                
-                if (querySnapshot.empty) {
-                    historialLista.innerHTML = '<p class="text-sm text-gray-500">Aún no hay libros guardados.</p>';
-                    return;
-                }
+// ---------- Listas (Firestore, en tiempo real) ----------
+let libros=[];
+const estadoDe=l=>l.estado||'por_descargar'; // los libros antiguos sin estado cuentan como "por descargar"
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const item = document.createElement('div');
-                    item.className = 'border-b border-gray-100 pb-3';
-                    item.innerHTML = `
-                        <h4 class="font-bold text-gray-900">${data.titulo}</h4>
-                        <p class="text-sm text-gray-600 mt-1">${data.sinopsis}</p>
-                    `;
-                    historialLista.appendChild(item);
-                });
-            } catch (error) {
-                console.error("Error cargando historial:", error);
-                // Si el índice requiere crearse, Firebase tirará error por el 'orderBy' la primera vez, 
-                // para simplificar lo cargamos sin ordenar si falla el índice:
-                try {
-                    const fallbackSnapshot = await getDocs(collection(db, "libros"));
-                    historialLista.innerHTML = ''; 
-                    fallbackSnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        historialLista.innerHTML += `
-                            <div class="border-b border-gray-100 pb-3">
-                                <h4 class="font-bold text-gray-900">${data.titulo}</h4>
-                                <p class="text-sm text-gray-600 mt-1">${data.sinopsis}</p>
-                            </div>
-                        `;
-                    });
-                } catch(e) {
-                    historialLista.innerHTML = '<p class="text-sm text-red-500">Error al cargar la base de datos.</p>';
-                }
-            }
-        }
-        
-        cargarHistorial(); // Llama a la función nada más cargar la página
+function btn(cls,icon,txt,fn){
+  const b=el('button',cls);b.type='button';
+  b.innerHTML='<svg><use href="#i-'+icon+'"/></svg>';
+  if(txt)b.append(txt);
+  b.onclick=fn;return b;
+}
+function tarjeta(l){
+  const pend=estadoDe(l)==='por_descargar';
+  const c=el('article','card pad libro');
+  const p=el('p','sin',l.sinopsis||'');
+  p.onclick=()=>p.classList.toggle('open');
+  const del=btn('del','trash','',()=>borrar(l));
+  del.setAttribute('aria-label','Eliminar libro');
+  const a=el('div','acts');
+  a.append(
+    btn(pend?'ok':'',pend?'check':'undo',pend?'Descargado':'Volver a por descargar',()=>mover(l,pend?'descargado':'por_descargar')),
+    del
+  );
+  c.append(el('h3','',l.titulo||'Sin título'),p,a);
+  return c;
+}
+function pintar(estado,cont,vacio){
+  cont.replaceChildren();
+  const items=libros.filter(l=>estadoDe(l)===estado);
+  if(!items.length)cont.append(el('p','vacio',vacio));
+  else items.forEach(l=>cont.append(tarjeta(l)));
+  return items.length;
+}
+async function mover(l,estado){
+  try{await updateDoc(doc(db,'libros',l.id),{estado});toast(estado==='descargado'?'Movido a Descargados':'Movido a Por descargar')}
+  catch(e){toast('No se pudo mover: '+(e.code||e.message))}
+}
+async function borrar(l){
+  if(!confirm('¿Eliminar "'+(l.titulo||'este libro')+'"?'))return;
+  try{await deleteDoc(doc(db,'libros',l.id));toast('Libro eliminado')}
+  catch(e){toast('No se pudo eliminar: '+(e.code||e.message))}
+}
+onSnapshot(collection(db,'libros'),s=>{
+  libros=s.docs.map(d=>({id:d.id,...d.data({serverTimestamps:'estimate'})}));
+  libros.sort((a,b)=>(b.fecha?.toMillis?.()??0)-(a.fecha?.toMillis?.()??0));
+  const n=pintar('por_descargar',$('l-pend'),'No hay libros por descargar. Los que añadas aparecerán aquí.');
+  pintar('descargado',$('l-desc'),'Todavía no has marcado ningún libro como descargado.');
+  $('badge').textContent=n;$('badge').classList.toggle('hidden',!n);
+},e=>{
+  ['l-pend','l-desc'].forEach(id=>$(id).replaceChildren(el('p','vacio','No se pudo cargar la lista: '+(e.code||e.message))));
+});
 
-        // Subida de imagen
-        uploadBtn.addEventListener('click', () => {
-            if (!currentKey) return;
-            imageInput.click();
-        });
+// ---------- Foto ----------
+const up=$('uploadBtn');
+up.onclick=()=>{
+  if(!key){abrirClave();return}
+  $('imageInput').click();
+};
+$('imageInput').onchange=async e=>{
+  const file=e.target.files[0];if(!file)return;
+  hideError();$('res').classList.add('hidden');
+  const img=await prepararImagen(file);
+  e.target.value=''; // permite elegir la misma foto otra vez
+  $('imagePreview').src=img.dataUrl;$('previewBox').classList.remove('hidden');
+  analizar(img.base64,img.mime);
+};
+function prepararImagen(file){
+  return new Promise(res=>{
+    const original=()=>{const r=new FileReader();r.onload=()=>res({dataUrl:r.result,base64:r.result.split(',')[1],mime:file.type||'image/jpeg'});r.readAsDataURL(file)};
+    const url=URL.createObjectURL(file),im=new Image();
+    im.onload=()=>{
+      try{
+        const k=Math.min(1,MAX/Math.max(im.naturalWidth,im.naturalHeight));
+        const c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+        c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+        const d=c.toDataURL('image/jpeg',.85);URL.revokeObjectURL(url);
+        res({dataUrl:d,base64:d.split(',')[1],mime:'image/jpeg'});
+      }catch(x){URL.revokeObjectURL(url);original()}
+    };
+    im.onerror=()=>{URL.revokeObjectURL(url);original()};
+    im.src=url;
+  });
+}
 
-        imageInput.addEventListener('change', async (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            errorContainer.classList.add('hidden');
-            resultContainer.classList.add('hidden');
-
-            // Preparar imagen
-            const objectUrl = URL.createObjectURL(file);
-            const img = new Image();
-            img.onload = () => {
-                const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
-                const canvas = document.createElement('canvas');
-                canvas.width = Math.round(img.naturalWidth * scale);
-                canvas.height = Math.round(img.naturalHeight * scale);
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                const base64 = dataUrl.split(',')[1];
-                
-                imagePreview.src = dataUrl;
-                previewContainer.classList.remove('hidden');
-                
-                analyzeImageWithGemini(base64, 'image/jpeg');
-            };
-            img.src = objectUrl;
-        });
-
-        async function analyzeImageWithGemini(base64Data, mimeType) {
-            loadingOverlay.classList.remove('hidden');
-            uploadBtn.disabled = true;
-
-            const promptText = "Analiza esta imagen con mucho detalle. Genera un título creativo y una sinopsis completa. Devuelve el resultado ESTRICTAMENTE en formato JSON: { \"titulo\": \"...\", \"sinopsis\": \"...\" }";
-
-            const payload = {
-                contents: [{
-                    role: "user",
-                    parts: [{ text: promptText }, { inlineData: { mimeType: mimeType, data: base64Data } }]
-                }],
-                generationConfig: { responseMimeType: "application/json" }
-            };
-
-            try {
-                let response = null;
-                for (let i = 0; i < MODELS.length; i++) {
-                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODELS[i]}:generateContent`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': currentKey },
-                        body: JSON.stringify(payload)
-                    });
-                    if (response.status !== 404) break;
-                }
-
-                if (!response.ok) throw new Error("Fallo en la API");
-                const result = await response.json();
-                
-                const parts = result.candidates[0].content.parts;
-                let jsonString = parts.filter(p => p.text && !p.thought).map(p => p.text).join('').trim();
-                jsonString = jsonString.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
-                
-                const parsedData = JSON.parse(jsonString);
-
-                // Mostrar en pantalla
-                resultTitle.textContent = parsedData.titulo;
-                resultSynopsis.textContent = parsedData.sinopsis;
-                resultContainer.classList.remove('hidden');
-
-                // GUARDAR EN FIREBASE
-                await addDoc(collection(db, "libros"), {
-                    titulo: parsedData.titulo,
-                    sinopsis: parsedData.sinopsis,
-                    fecha: serverTimestamp()
-                });
-
-                // Actualizar la lista visible abajo
-                cargarHistorial();
-
-            } catch (error) {
-                console.error(error);
-                errorMessage.textContent = "Error al analizar o guardar.";
-                errorContainer.classList.remove('hidden');
-            } finally {
-                loadingOverlay.classList.add('hidden');
-                uploadBtn.disabled = false;
-            }
-        }
-    </script>
+// ---------- Gemini ----------
+function explicar(s,m){
+  const t=(m||'').toLowerCase();
+  if(s===400&&t.includes('api key'))return 'La clave no es válida. Cópiala de nuevo desde Google AI Studio y pégala en «Clave de Gemini», al final de la página.';
+  if(s===401||s===403)return 'Google ha rechazado la clave. Crea una nueva en AI Studio y pégala en «Clave de Gemini», al final de la página.';
+  if(s===404)return 'Ningún modelo de la lista está disponible. Hay que actualizar MODELS en el archivo.';
+  if(s===429)return 'Has llegado al límite de uso de Gemini. Espera un minuto e inténtalo de nuevo.';
+  if(s>=500)return 'Los servidores de Google tienen problemas ahora mismo. Inténtalo en un rato.';
+  return 'No se pudo analizar la imagen.';
+}
+async function pedirDatos(b64,mime){
+  const body=JSON.stringify({contents:[{role:'user',parts:[{text:PROMPT},{inlineData:{mimeType:mime,data:b64}}]}],generationConfig:{responseMimeType:'application/json'}});
+  let r;
+  for(const m of MODELS){
+    r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+m+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body});
+    if(![404,429,503].includes(r.status))break;
+  }
+  if(!r.ok){
+    const b=await r.json().catch(()=>({}));
+    const e=new Error(b.error?.message||'sin detalle');e.status=r.status;throw e;
+  }
+  const res=await r.json(),c=res.candidates?.[0],parts=c?.content?.parts;
+  if(!parts?.length)throw new Error('Gemini no devolvió texto ('+(res.promptFeedback?.blockReason||c?.finishReason||'respuesta vacía')+')');
+  const txt=parts.filter(p=>p.text&&!p.thought).map(p=>p.text).join('').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+  return JSON.parse(txt);
+}
+async function analizar(b64,mime){
+  $('ov').classList.remove('hidden');up.disabled=true;
+  let datos;
+  try{
+    datos=await pedirDatos(b64,mime);
+  }catch(e){
+    console.error(e);
+    if(e.status)showError(explicar(e.status,e.message),'Detalle: '+e.status+' · '+e.message);
+    else if(e instanceof TypeError)showError('No se pudo conectar con Google. Revisa tu conexión.','Detalle: '+e.message);
+    else showError('No se pudo leer la respuesta de Gemini. Inténtalo de nuevo.','Detalle: '+e.message);
+    $('ov').classList.add('hidden');up.disabled=false;return;
+  }
+  const titulo=datos.titulo||'Título no disponible',sinopsis=datos.sinopsis||'Sinopsis no disponible';
+  try{
+    await addDoc(collection(db,'libros'),{titulo,sinopsis,estado:'por_descargar',fecha:serverTimestamp()});
+    $('rt').textContent=titulo;$('rs').textContent=sinopsis;$('res').classList.remove('hidden');
+    $('res').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    console.error(e);
+    showError('Se analizó la foto, pero no se pudo guardar el libro.','Detalle: '+(e.code||'')+' '+e.message);
+  }
+  $('ov').classList.add('hidden');up.disabled=false;
+}
+</script>
 </body>
 </html>
