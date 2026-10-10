@@ -115,6 +115,22 @@
 
     </main>
 
+    <!-- Configuración e inicialización de Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXyqPSAPOfOlB2vFBY-vKWKAiovDcQwz4",
+            authDomain: "prueba-1-ff8ed.firebaseapp.com",
+            projectId: "prueba-1-ff8ed",
+            storageBucket: "prueba-1-ff8ed.firebasestorage.app",
+            messagingSenderId: "65575177647",
+            appId: "1:65575177647:web:905b36443bfe0f6a01335a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // ---------------------------------------------------------------
