@@ -20,9 +20,8 @@ button{font:inherit;cursor:pointer}
 .card{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:16px}
 .pad{padding:16px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
-.row input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--tx);font:inherit}
+.row input,.row textarea{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--tx);font:inherit;resize:none}
 .link{background:none;border:0;color:var(--blue);font-weight:600;padding:0}
-.note{font-size:13px;color:var(--tx2);margin:-8px 16px 20px}
 .okt{color:var(--green);font-weight:600;display:flex;align-items:center;gap:6px}
 .main-btn{width:100%;border:0;border-radius:14px;background:var(--blue);color:#fff;font-weight:600;padding:15px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px}
 .main-btn:active{opacity:.7}
@@ -33,14 +32,30 @@ button{font:inherit;cursor:pointer}
 .sp{width:28px;height:28px;border:3px solid var(--sep);border-top-color:var(--blue);border-radius:50%;animation:s 1s linear infinite}
 @keyframes s{to{transform:rotate(360deg)}}
 .sin{margin:0;font-size:15px;color:var(--tx2)}
-.libro p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
-.libro p.open{display:block}
-.acts{display:flex;border-top:.5px solid var(--sep);margin:14px -16px -16px}
-.acts button{flex:1;background:none;border:0;padding:14px 8px;font-size:16px;color:var(--blue);display:flex;align-items:center;justify-content:center;gap:6px}
-.acts button:active{background:var(--bg)}
-.acts button+button{border-left:.5px solid var(--sep)}
-.acts .ok{color:var(--green);font-weight:600}
-.acts .del{color:var(--red);flex:0 0 22%}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.tile{background:var(--card);border:0;border-radius:14px;color:var(--blue);font-size:13px;font-weight:500;padding:16px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.tile svg{width:28px;height:28px}
+.tile:active{opacity:.6}
+.tile:disabled{opacity:.4}
+.row.sep{border-top:.5px solid var(--sep);align-items:flex-start}
+.mic{background:none;border:0;color:var(--blue);padding:6px;border-radius:50%;display:flex}
+.mic.rec{background:var(--red);color:#fff}
+.cap{font-size:13px;color:var(--tx2);margin:0 16px 8px}
+.lista{background:var(--card);border-radius:14px;overflow:hidden}
+.fila{display:flex;gap:14px;padding:14px 16px;border-top:.5px solid var(--sep);cursor:pointer}
+.fila:first-child{border-top:0}
+.chk{position:relative;flex:none;width:28px;height:28px;margin-top:1px;border-radius:50%;border:2px solid var(--tx2);background:none;color:transparent;padding:0;display:flex;align-items:center;justify-content:center}
+.chk::after{content:"";position:absolute;inset:-10px}
+.chk.on{background:var(--green);border-color:var(--green);color:#fff}
+.chk svg{width:16px;height:16px;stroke-width:3}
+.txt{flex:1;min-width:0}
+.tit{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub{font-size:15px;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fec,.eli{display:none}
+.fec{font-size:12px;color:var(--tx2);margin-top:8px}
+.eli{background:none;border:0;color:var(--red);font-size:15px;padding:10px 0 0}
+.abierta .tit,.abierta .sub{white-space:normal;overflow:visible}
+.abierta .fec,.abierta .eli{display:block}
 .vacio{text-align:center;color:var(--tx2);font-size:15px;padding:56px 24px 0;margin:0}
 .errc{background:rgba(255,59,48,.1);color:var(--red)}
 .errc p{margin:6px 0 0;font-size:13px;word-break:break-word}
@@ -70,6 +85,9 @@ button{font:inherit;cursor:pointer}
 <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></symbol>
 <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></symbol>
+<symbol id="i-tick" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></symbol>
 </defs></svg>
 
 <main>
@@ -77,7 +95,11 @@ button{font:inherit;cursor:pointer}
 
 <section id="v-add">
   <input type="file" id="imageInput" accept="image/*" class="hidden">
-  <button id="uploadBtn" class="main-btn" type="button"><svg><use href="#i-cam"/></svg>Tomar o subir foto</button>
+  <div class="tiles">
+    <button id="uploadBtn" class="tile" type="button"><svg><use href="#i-cam"/></svg>Foto</button>
+    <button id="voiceBtn" class="tile" type="button"><svg><use href="#i-mic"/></svg>Dictar</button>
+    <button id="typeBtn" class="tile" type="button"><svg><use href="#i-pen"/></svg>Escribir</button>
+  </div>
 
   <div id="previewBox" class="card prev hidden">
     <img id="imagePreview" alt="Vista previa">
@@ -107,6 +129,18 @@ button{font:inherit;cursor:pointer}
     <button id="saveKeyBtn" class="main-btn" type="button">Guardar clave</button>
     <button id="removeKeyBtn" class="link rm hidden" type="button">Quitar clave</button>
     <button id="closeKey" class="link" type="button">Cerrar</button>
+  </div>
+</div>
+
+<div id="sheetLibro" class="sheet hidden">
+  <div class="panel" role="dialog" aria-label="Nuevo libro">
+    <h3 style="margin-bottom:14px">Nuevo libro</h3>
+    <div class="card">
+      <div class="row"><input id="fTitulo" placeholder="Título" autocomplete="off"><button class="mic" data-f="fTitulo" type="button" aria-label="Dictar el título"><svg><use href="#i-mic"/></svg></button></div>
+      <div class="row sep"><textarea id="fSinopsis" rows="3" placeholder="Sinopsis (opcional)"></textarea><button class="mic" data-f="fSinopsis" type="button" aria-label="Dictar la sinopsis"><svg><use href="#i-mic"/></svg></button></div>
+    </div>
+    <button id="saveBook" class="main-btn" type="button">Añadir a Por descargar</button>
+    <button id="closeBook" class="link" type="button">Cancelar</button>
   </div>
 </div>
 
@@ -177,32 +211,30 @@ keyState();
 let libros=[];
 const estadoDe=l=>l.estado||'por_descargar'; // los libros antiguos sin estado cuentan como "por descargar"
 
-function btn(cls,icon,txt,fn){
-  const b=el('button',cls);b.type='button';
-  b.innerHTML='<svg><use href="#i-'+icon+'"/></svg>';
-  if(txt)b.append(txt);
-  b.onclick=fn;return b;
-}
-function tarjeta(l){
+const fecha=f=>f?.toMillis?'Añadido el '+new Date(f.toMillis()).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}):'';
+function fila(l){
   const pend=estadoDe(l)==='por_descargar';
-  const c=el('article','card pad libro');
-  const p=el('p','sin',l.sinopsis||'');
-  p.onclick=()=>p.classList.toggle('open');
-  const del=btn('del','trash','',()=>borrar(l));
-  del.setAttribute('aria-label','Eliminar libro');
-  const a=el('div','acts');
-  a.append(
-    btn(pend?'ok':'',pend?'check':'undo',pend?'Descargado':'Volver a por descargar',()=>mover(l,pend?'descargado':'por_descargar')),
-    del
-  );
-  c.append(el('h3','',l.titulo||'Sin título'),p,a);
-  return c;
+  const r=el('div','fila');
+  const c=el('button','chk'+(pend?'':' on'));c.type='button';
+  c.setAttribute('aria-label',pend?'Marcar como descargado':'Volver a por descargar');
+  c.innerHTML='<svg><use href="#i-tick"/></svg>';
+  c.onclick=e=>{e.stopPropagation();mover(l,pend?'descargado':'por_descargar')};
+  const del=el('button','eli','Eliminar libro');del.type='button';
+  del.onclick=e=>{e.stopPropagation();borrar(l)};
+  const t=el('div','txt');
+  t.append(el('div','tit',l.titulo||'Sin título'),el('div','sub',l.sinopsis||'Sin sinopsis'),el('div','fec',fecha(l.fecha)),del);
+  r.append(c,t);
+  r.onclick=()=>r.classList.toggle('abierta');
+  return r;
 }
-function pintar(estado,cont,vacio){
+function pintar(estado,cont,vacio,ayuda){
   cont.replaceChildren();
   const items=libros.filter(l=>estadoDe(l)===estado);
-  if(!items.length)cont.append(el('p','vacio',vacio));
-  else items.forEach(l=>cont.append(tarjeta(l)));
+  if(!items.length){cont.append(el('p','vacio',vacio));return 0}
+  cont.append(el('p','cap',items.length+(items.length===1?' libro. ':' libros. ')+ayuda));
+  const ul=el('div','lista');
+  items.forEach(l=>ul.append(fila(l)));
+  cont.append(ul);
   return items.length;
 }
 async function mover(l,estado){
@@ -217,12 +249,48 @@ async function borrar(l){
 onSnapshot(collection(db,'libros'),s=>{
   libros=s.docs.map(d=>({id:d.id,...d.data({serverTimestamps:'estimate'})}));
   libros.sort((a,b)=>(b.fecha?.toMillis?.()??0)-(a.fecha?.toMillis?.()??0));
-  const n=pintar('por_descargar',$('l-pend'),'No hay libros por descargar. Los que añadas aparecerán aquí.');
-  pintar('descargado',$('l-desc'),'Todavía no has marcado ningún libro como descargado.');
+  const n=pintar('por_descargar',$('l-pend'),'No hay libros por descargar. Los que añadas aparecerán aquí.','Toca el círculo cuando lo hayas descargado.');
+  pintar('descargado',$('l-desc'),'Todavía no has marcado ningún libro como descargado.','Toca el círculo para devolverlo a Por descargar.');
   $('badge').textContent=n;$('badge').classList.toggle('hidden',!n);
 },e=>{
   ['l-pend','l-desc'].forEach(id=>$(id).replaceChildren(el('p','vacio','No se pudo cargar la lista: '+(e.code||e.message))));
 });
+
+// ---------- Añadir a mano o por voz ----------
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null;
+function dictar(campo,btn){
+  if(!SR){toast('Este navegador no permite dictar. Usa el micrófono del teclado.');campo.focus();return}
+  if(rec){rec.stop();return}
+  rec=new SR();rec.lang='es-ES';rec.interimResults=true;
+  const base=campo.value.trim()?campo.value.trim()+' ':'';
+  btn.classList.add('rec');
+  rec.onresult=e=>{campo.value=base+[...e.results].map(r=>r[0].transcript).join('')};
+  rec.onerror=e=>toast(e.error==='no-speech'?'No se oyó nada':'No se pudo dictar. Revisa el permiso del micrófono.');
+  rec.onend=()=>{btn.classList.remove('rec');rec=null;campo.value=campo.value.replace(/^\s*(\S)/,m=>m.toUpperCase())};
+  rec.start();
+}
+function abrirLibro(voz){
+  $('fTitulo').value='';$('fSinopsis').value='';
+  $('sheetLibro').classList.remove('hidden');
+  if(voz)dictar($('fTitulo'),document.querySelector('[data-f=fTitulo]'));else $('fTitulo').focus();
+}
+function cerrarLibro(){try{rec&&rec.abort()}catch(e){}$('sheetLibro').classList.add('hidden')}
+$('voiceBtn').onclick=()=>abrirLibro(true);
+$('typeBtn').onclick=()=>abrirLibro(false);
+$('closeBook').onclick=cerrarLibro;
+$('sheetLibro').onclick=e=>{if(e.target===$('sheetLibro'))cerrarLibro()};
+document.querySelectorAll('.mic').forEach(b=>b.onclick=()=>dictar($(b.dataset.f),b));
+$('saveBook').onclick=async()=>{
+  const titulo=$('fTitulo').value.trim(),sinopsis=$('fSinopsis').value.trim();
+  if(!titulo){$('fTitulo').focus();return}
+  $('saveBook').disabled=true;
+  try{
+    await addDoc(collection(db,'libros'),{titulo,sinopsis,estado:'por_descargar',fecha:serverTimestamp()});
+    cerrarLibro();toast('Añadido a Por descargar');
+  }catch(e){toast('No se pudo guardar: '+(e.code||e.message))}
+  $('saveBook').disabled=false;
+};
 
 // ---------- Foto ----------
 const up=$('uploadBtn');
